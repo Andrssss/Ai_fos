@@ -1,4 +1,4 @@
-/* Minden margin/padding eltávolítása az alapból */
+/* Példa: minden középre igazítva, sötét háttér */
 html, body {
   margin: 0;
   padding: 0;
@@ -6,7 +6,6 @@ html, body {
   height: 100%;
 }
 
-/* Egész oldal – sötét háttér, fehér betű */
 body {
   font-family: Arial, sans-serif;
   background-color: #1e1e1e;
@@ -14,42 +13,34 @@ body {
   text-align: center; 
 }
 
-/* A React root-unk (#root vagy #app) legyen 100% széles és magas, ha vertikálisan is középre akarod, flex-szel megoldhatod */
 #root {
   width: 100%;
   min-height: 100%;
 }
 
-/* A fő App-konténered (app-container) */
 .app-container {
-  /* Ez a lényeg: full szélesség + margin 0 auto => a tartalom középen lesz */
   width: 100%;
-  max-width: 900px;  /* opcionális: korlátozhatod a tartalom max szélességét */
-  margin: 0 auto; 
-    
-  /* Flexbox a tökéletes középre igazításhoz */
+  max-width: 900px;
+  margin: 0 auto;
+  
   display: flex;
   flex-direction: column;
-  align-items: center;  /* vízszintesen középre */
-  justify-content: flex-start; /* ha függőlegesen is középre kell, tedd "center"-re */
+  align-items: center;
+  justify-content: flex-start;
   
-  /* További alapbeállítások */
   padding: 20px;
   box-sizing: border-box;
 }
 
-/* Cím */
 .app-title {
   font-size: 2.4rem;
   margin-bottom: 1.2rem;
 }
 
-/* Fájlfeltöltő rész */
 .upload-section {
   margin-bottom: 1.5rem;
 }
 
-/* Fájl input */
 .file-input {
   display: inline-block;
   margin: 0 auto;
@@ -61,7 +52,6 @@ body {
   cursor: pointer;
 }
 
-/* Feltöltött kép */
 .uploaded-image {
   max-width: 80%;
   height: auto;
@@ -71,7 +61,6 @@ body {
   box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
-/* Szövegfelismerő gomb */
 .ocr-button {
   display: inline-block;
   background-color: #007acc;
@@ -89,13 +78,11 @@ body {
   background-color: #005fa3;
 }
 
-/* Letiltott állapot */
 .button-disabled {
   background-color: #555 !important;
   cursor: not-allowed;
 }
 
-/* LaTeX kimeneti mező */
 .latex-textarea {
   display: block;
   margin: 0 auto 1rem;
@@ -110,7 +97,6 @@ body {
   resize: none;
 }
 
-/* Letöltés gomb */
 .download-button {
   display: inline-block;
   background-color: #00ad68;
@@ -128,7 +114,6 @@ body {
   background-color: #008856;
 }
 
-/* Mobilbarát beállítások */
 @media (max-width: 480px) {
   .app-title {
     font-size: 1.8rem;
