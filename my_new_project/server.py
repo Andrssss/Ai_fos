@@ -11,7 +11,8 @@ app = Flask(__name__)
 CORS(app)
 
 # Tesseract telepítési útvonala (Windows esetén, ha szükséges):
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+pytesseract.pytesseract.tesseract_cmd = "/usr/local/bin/tesseract"
+
 
 def preprocess_image(image_path):
     """

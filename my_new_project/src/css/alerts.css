@@ -1,0 +1,45 @@
+.alert-container {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    padding: 12px 18px;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    z-index: 1000;
+    min-width: 250px;
+    text-align: center;
+    transition: opacity 0.5s ease-in-out;
+}
+
+/* Alapállapot: elrejtett */
+.alert-container.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* Színek az alert típusokhoz */
+.alert-success {
+    background-color: #28a745;
+    color: white;
+    border: 1px solid #1e7e34;
+}
+
+.alert-error {
+    background-color: #dc3545;
+    color: white;
+    border: 1px solid #b02a37;
+}
+
+.alert-warning {
+    background-color: #ffc107;
+    color: black;
+    border: 1px solid #e0a800;
+}
+
+.alert-neutral {
+    background-color: #6c757d;
+    color: white;
+    border: 1px solid #5a6268;
+}
+
