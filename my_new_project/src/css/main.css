@@ -10,6 +10,8 @@ body {
     background-color: #ffffff;
     color: #1e1e1e;
     text-align: center;
+    font-family: -apple-system, BlinkMacSystemFont, "San Francisco", "Helvetica Neue", Arial, sans-serif;
+
 }
 
 #root {
