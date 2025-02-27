@@ -1,26 +1,35 @@
-import React from "react";
+import React, { useState } from "react";
 import "../css/auth-panel.css"; // Import the CSS file
 
 export default function AuthModal({
-    showModal,
-    modalType,
-    closeModal,
-    authUser,
-    handleAuthChange,
-    handleLogin,
-    handleRegister,
-    authMessage
-}) {
+                                      showModal,
+                                      modalType,
+                                      closeModal,
+                                      authUser,
+                                      handleAuthChange,
+                                      handleLogin,
+                                      handleRegister,
+                                      authMessage
+                                  }) {
     if (!showModal) return null;
 
-    const handleSubmit = (e) => {
+    const [invalidPassword, setInvalidPassword] = useState(false);
+    const [currentModalType, setCurrentModalType] = useState(modalType); // 🔹 Kezeli a modal váltását
+
+    const handleSubmit = async (e) => {
         e.preventDefault(); // Prevent page refresh
 
-        if (modalType === "login") {
-            handleLogin();  // 🔹 Meghívjuk a bejelentkezési függvényt
-        } else if (modalType === "register") {
+        if (currentModalType === "login") {
+            const success = await handleLogin();  // 🔹 Meghívjuk a bejelentkezési függvényt
+            setInvalidPassword(!success); // Ha sikertelen, akkor piros lesz a mező
+        } else if (currentModalType === "register") {
             handleRegister();  // 🔹 Meghívjuk a regisztrációs függvényt
+            setInvalidPassword(false); // Regisztrációkor nincs ilyen ellenőrzés
         }
+    };
+
+    const toggleModalType = () => {
+        setCurrentModalType(currentModalType === "login" ? "register" : "login");
     };
 
     return (
@@ -28,7 +37,7 @@ export default function AuthModal({
             <div className="auth-panel">
                 <button type="close-button" className="close-button" onClick={closeModal}>×</button>
 
-                {modalType === "login" && (
+                {currentModalType === "login" ? (
                     <>
                         <h2>Belépés</h2>
                         <form className="login-form" onSubmit={handleSubmit}>
@@ -50,16 +59,19 @@ export default function AuthModal({
                                     value={authUser.password}
                                     onChange={handleAuthChange}
                                     required
+                                    className={invalidPassword ? "input-error" : ""}
                                 />
                             </div>
+                            {invalidPassword && <p className="error-message">Hibás jelszó!</p>}
                             <button type="submit" className="auth-button">
                                 Belépés
                             </button>
                         </form>
+                        <p className="switch-auth">
+                            Még nincs fiókod? <button onClick={toggleModalType} className="switch-button" >Regisztrálj!</button>
+                        </p>
                     </>
-                )}
-
-                {modalType === "register" && (
+                ) : (
                     <>
                         <h2>Regisztráció</h2>
                         <form className="login-form" onSubmit={handleSubmit}>
@@ -97,6 +109,9 @@ export default function AuthModal({
                                 Regisztráció
                             </button>
                         </form>
+                        <p className="switch-auth">
+                            Már van fiókod? <button onClick={toggleModalType} className="switch-button">Jelentkezz be!</button>
+                        </p>
                     </>
                 )}
 

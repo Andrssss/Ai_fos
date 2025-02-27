@@ -3,6 +3,7 @@ import Alert from "./components/Alert.jsx";
 import AuthModal from "./components/AuthModal.jsx";
 import UserPanel from "./components/UserPanel.jsx";
 import OCRProcessor from "./components/OCRProcessor.jsx";
+import axios from "axios"
 import "./css/main.css";
 
 export default function App() {
@@ -32,17 +33,65 @@ export default function App() {
   };
 
   // 🔹 Bejelentkezési függvény
-  const handleLogin = () => {
-    setLoggedInUser(authUser.username); // 🔹 Beállítja a bejelentkezett felhasználót
-    showAlert(`Sikeres bejelentkezés, ${authUser.username}!`, "success");
-    closeModal();
+  const handleLogin = async () => {
+    if (!authUser.username || !authUser.password) {
+      showAlert("Kérlek tölts ki minden mezőt!");
+      return;
+    }
+
+    try {
+      const formData = new URLSearchParams();
+      formData.append("username", authUser.username);
+      formData.append("password", authUser.password);
+
+      const response = await axios.post(
+          "https://www.kacifant.hu/andris/login.php",
+          formData,
+          { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
+      );
+
+      if (response.data.includes("Sikeres")) {
+        setLoggedInUser(authUser.username); // Beállítja a felhasználó nevét
+        closeModal();
+      } else {
+        showAlert("Hibás felhasználónév vagy jelszó");
+      }
+    } catch (error) {
+      showAlert("Hiba történt a bejelentkezés során");
+    }
   };
 
+
+
+
   // 🔹 Regisztrációs függvény (opcionálisan frissítheti az állapotot)
-  const handleRegister = () => {
-    showAlert(`Sikeres regisztráció, ${authUser.username}!`, "success");
-    closeModal();
+  const handleRegister = async () => {
+    if (!authUser.username || !authUser.email || !authUser.password) {
+      showAlert("Kérlek tölts ki minden mezőt!");
+      return;
+    }
+
+    try {
+      const formData = new URLSearchParams();
+      formData.append("username", authUser.username);
+      formData.append("email", authUser.email);
+      formData.append("password", authUser.password);
+
+      const response = await axios.post(
+          "https://www.kacifant.hu/andris/register.php",
+          formData,
+          { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
+      );
+
+      showAlert(response.data);
+      if (response.data.includes("Sikeres")) {
+        closeModal();
+      }
+    } catch (error) {
+      showAlert("Hiba történt a regisztráció során" + error);
+    }
   };
+
 
   return (
       <div className="app-container">

@@ -50,13 +50,12 @@
 }
 
 /* Bejelentkezés gomb */
-.auth-panel button[type="register-button"],
-.auth-panel button[type="login-button"] {
+.auth-panel .auth-button {
     width: 100%;
     margin-top: 20px;
     text-align: center;
     height: 55px;
-    background-color: rgb(241, 153, 20);
+    background-color: rgb(241, 153, 20); /* Narancssárga */
     color: white;
     font-weight: bold;
     border: none;
@@ -66,12 +65,14 @@
     transition: 0.3s ease;
 }
 
+.auth-panel .auth-button:hover {
+    background-color: rgb(255, 178, 72); /* Világosabb narancs */
+}
+
 .close-panel {
     background-color: #FFFFFF;
 }
-.auth-panel button:hover {
-    background-color: rgb(255, 178, 72);
-}
+
 
 /* Bejelentkezési sáv */
 .auth-panel .login-bar {
@@ -87,7 +88,7 @@
     width: 30px;
     height: 30px;
 
-    background-color: rgb(200, 200, 200);
+    background-color: rgb(61, 61, 61);
     color: white;
     font-weight: bold;
     border: 1.5px solid rgb(45 45 45);
@@ -135,4 +136,49 @@
     z-index: 101;
 }
 
+/* Hiba esetén piros keret a jelszó mezőre */
+.input-error {
+    animation: shake 0.3s;
+}
 
+@keyframes shake {
+    25% {
+        transform: translateX(4px);
+    }
+    50% {
+        transform: translateX(-4px);
+    }
+    75% {
+        transform: translateX(4px);
+    }
+}
+
+/* Hibás jelszó esetén megjelenő hibaüzenet */
+.error-message {
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
+    text-align: center;
+}
+
+
+.switch-auth {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.switch-button {
+    background: none;
+    border: none;
+    color: blue;
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 14px;
+}
+
+.switch-button:hover {
+    color: darkblue;
+    background:none;
+    text-decoration: underline;
+}

@@ -11,7 +11,6 @@ export default function UserPanel({ loggedInUser, handleLogout, openModal }) {
                 </>
             ) : (
                 <>
-                    <button onClick={() => openModal("register")}>Regisztráció</button>
                     <button onClick={() => openModal("login")}>Belépés</button>
                 </>
             )}
