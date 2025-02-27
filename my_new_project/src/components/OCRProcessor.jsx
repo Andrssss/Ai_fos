@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "../css/main.css";
-import "../css/ocr.css"
+import "../css/ocr.css";
 
 export default function OCRProcessor({ showAlert }) {
     const [image, setImage] = useState(null);
@@ -40,22 +40,27 @@ export default function OCRProcessor({ showAlert }) {
 
     return (
         <div className="ocr-container">
-            <h1 className="app-title">Matematikai Kézírás Felismerő</h1>
+            <h1 className="app-title">Scriba</h1>
             <div className="upload-section">
-                <label class="drop-container" id="dropcontainer">
-                    <span class="drop-title">Húzd ide a fájlt</span>
+                <label className="drop-container" id="dropcontainer">
+                    <span className="drop-title">Húzd ide a fájlt</span>
                     vagy
                     <input className="file-input" type="file" accept="image/*" onChange={handleImageUpload} />
-
                 </label>
-
-
             </div>
-            {image && <img className="uploaded-image" src={URL.createObjectURL(image)} alt="Feltöltött kép" />}
-            <button className={`ocr-button ${(!image || loading) ? "button-disabled" : ""}`} onClick={handleOCR} disabled={!image || loading}>
-                {loading ? "Felismerés folyamatban..." : "Szöveg felismerése"}
-            </button>
-            {latexCode && <textarea className="latex-textarea" readOnly value={latexCode} />}
+
+            {image && (
+                <>
+                    <img className="uploaded-image" src={URL.createObjectURL(image)} alt="Feltöltött kép" />
+                    <button className={`ocr-button ${(!image || loading) ? "button-disabled" : ""}`} onClick={handleOCR} disabled={!image || loading}>
+                        {loading ? "Felismerés folyamatban..." : "Szöveg felismerése"}
+                    </button>
+                </>
+            )}
+
+            {latexCode && (
+                <textarea className="latex-textarea" readOnly value={latexCode} />
+            )}
         </div>
     );
 }

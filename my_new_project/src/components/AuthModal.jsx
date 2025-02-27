@@ -1,27 +1,37 @@
 import React from "react";
-import "../css/auth-panel.css"; // Az új CSS fájl
+import "../css/auth-panel.css"; // Import the CSS file
 
 export default function AuthModal({
-                                      showModal,
-                                      modalType,
-                                      closeModal,
-                                      authUser,
-                                      handleAuthChange,
-                                      handleLogin,
-                                      handleRegister,
-                                      authMessage
-                                  }) {
+    showModal,
+    modalType,
+    closeModal,
+    authUser,
+    handleAuthChange,
+    handleLogin,
+    handleRegister,
+    authMessage
+}) {
     if (!showModal) return null;
+
+    const handleSubmit = (e) => {
+        e.preventDefault(); // Prevent page refresh
+
+        if (modalType === "login") {
+            handleLogin();  // 🔹 Meghívjuk a bejelentkezési függvényt
+        } else if (modalType === "register") {
+            handleRegister();  // 🔹 Meghívjuk a regisztrációs függvényt
+        }
+    };
 
     return (
         <div className="modal-overlay">
             <div className="auth-panel">
-                <button type="close-button" onClick={closeModal}>×</button>
+                <button type="close-button" className="close-button" onClick={closeModal}>×</button>
 
                 {modalType === "login" && (
                     <>
                         <h2>Belépés</h2>
-                        <form className="login-form">
+                        <form className="login-form" onSubmit={handleSubmit}>
                             <div className="input-group">
                                 <input
                                     type="username"
@@ -42,13 +52,9 @@ export default function AuthModal({
                                     required
                                 />
                             </div>
-                            <button id="login" type="login-button" onClick={handleLogin}>
+                            <button type="submit" className="auth-button">
                                 Belépés
                             </button>
-                            <div className="login-bar">
-                                <input type="checkbox" id="remember" />
-                                <label htmlFor="remember">Emlékezz rám</label>
-                            </div>
                         </form>
                     </>
                 )}
@@ -56,7 +62,7 @@ export default function AuthModal({
                 {modalType === "register" && (
                     <>
                         <h2>Regisztráció</h2>
-                        <form className="login-form">
+                        <form className="login-form" onSubmit={handleSubmit}>
                             <div className="input-group">
                                 <input
                                     type="username"
@@ -87,7 +93,7 @@ export default function AuthModal({
                                     required
                                 />
                             </div>
-                            <button id="login" type="register-button" onClick={handleRegister}>
+                            <button type="submit" className="auth-button">
                                 Regisztráció
                             </button>
                         </form>
@@ -95,10 +101,6 @@ export default function AuthModal({
                 )}
 
                 {authMessage && <p className="auth-message">{authMessage}</p>}
-
-
-
-
             </div>
         </div>
     );

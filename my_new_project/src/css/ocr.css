@@ -19,6 +19,34 @@
     border-color: #111;
 }
 
+.latex-textarea {
+    width: 100%;
+    max-width: 700px;
+    min-width: 100px;
+
+    height: 80vh; /* Alapértelmezett magasság a képernyő 80%-a */
+    min-height: 10vh; /* Minimum magasság a képernyő 30%-a */
+    max-height: 20vh; /* Maximum magasság a képernyő 90%-a */
+
+    margin: 20px auto; /* Középre igazítás */
+    margin-top: 20px;
+    padding: 10px;
+    font-size: 16px;
+    font-family: "Courier New", monospace;
+    background-color: #f8f8f8; /* Világos háttér */
+    color: #000000; /* Fekete szöveg */
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    resize: vertical; /* Engedi a felhasználónak, hogy állítsa a magasságot */
+   
+    overflow-y: auto;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+
 .drop-container:hover .drop-title {
     color: #222;
 }
