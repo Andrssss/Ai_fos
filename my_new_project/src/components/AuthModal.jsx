@@ -32,14 +32,20 @@ export default function AuthModal({
         setCurrentModalType(currentModalType === "login" ? "register" : "login");
     };
 
+    const handleOverlayClick = (e) => {
+        if (e.target.classList.contains("modal-overlay")) {
+            closeModal(); // 🔹 Csak akkor zárja be, ha a háttérre kattintanak
+        }
+    };
+
     return (
-        <div className="modal-overlay">
+        <div className="modal-overlay" onClick={handleOverlayClick}>
             <div className="auth-panel">
                 <button type="close-button" className="close-button" onClick={closeModal}>×</button>
 
                 {currentModalType === "login" ? (
                     <>
-                        <h2>Belépés</h2>
+
                         <form className="login-form" onSubmit={handleSubmit}>
                             <div className="input-group">
                                 <input
@@ -73,7 +79,7 @@ export default function AuthModal({
                     </>
                 ) : (
                     <>
-                        <h2>Regisztráció</h2>
+
                         <form className="login-form" onSubmit={handleSubmit}>
                             <div className="input-group">
                                 <input
