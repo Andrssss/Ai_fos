@@ -16,6 +16,19 @@ export default function OCRProcessor({ showAlert }) {
         }
     };
 
+    const handleDrop = (e) => {
+        e.preventDefault();
+        const file = e.dataTransfer.files[0];
+        if (file) {
+            setImage(file);
+            setLatexCode("");
+        }
+    };
+
+    const handleDragOver = (e) => {
+        e.preventDefault();
+    };
+
     const handleOCR = async () => {
         if (!image) {
             showAlert("Nincs kép feltöltve!", "warning");
@@ -42,24 +55,46 @@ export default function OCRProcessor({ showAlert }) {
         <div className="ocr-container">
             <h1 className="app-title">Scriba</h1>
             <div className="upload-section">
-                <label className="drop-container" id="dropcontainer">
+                <label 
+                    className="drop-container" 
+                    id="dropcontainer"
+                    onDragOver={handleDragOver}
+                    onDrop={handleDrop}
+                >
                     <span className="drop-title">Húzd ide a fájlt</span>
                     vagy
-                    <input className="file-input" type="file" accept="image/*" onChange={handleImageUpload} />
+                    <input 
+                        className="file-input" 
+                        type="file" 
+                        accept="image/*" 
+                        onChange={handleImageUpload} 
+                    />
                 </label>
             </div>
 
             {image && (
                 <>
-                    <img className="uploaded-image" src={URL.createObjectURL(image)} alt="Feltöltött kép" />
-                    <button className={`ocr-button ${(!image || loading) ? "button-disabled" : ""}`} onClick={handleOCR} disabled={!image || loading}>
+                    <img 
+                        className="uploaded-image" 
+                        src={URL.createObjectURL(image)} 
+                        alt="Feltöltött kép" 
+                    />
+                    <button 
+                        className={`ocr-button ${(!image || loading) ? "button-disabled" : ""}`} 
+                        onClick={handleOCR} 
+                        disabled={!image || loading}
+                    >
                         {loading ? "Felismerés folyamatban..." : "Szöveg felismerése"}
                     </button>
                 </>
             )}
 
             {latexCode && (
-                <textarea className="latex-textarea" readOnly value={latexCode} />
+                <textarea 
+                    className="latex-textarea" 
+                    readOnly 
+                    value={latexCode} 
+                />
             )}
         </div>
     );
