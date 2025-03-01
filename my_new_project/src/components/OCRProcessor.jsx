@@ -71,7 +71,6 @@ export default function OCRProcessor({ showAlert }) {
                     />
                 </label>
             </div>
-
             {image && (
                 <>
                     <img 

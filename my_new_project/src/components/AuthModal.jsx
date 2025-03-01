@@ -27,7 +27,6 @@ export default function AuthModal({
             setInvalidPassword(false); // Regisztrációkor nincs ilyen ellenőrzés
         }
     };
-
     const toggleModalType = () => {
         setCurrentModalType(currentModalType === "login" ? "register" : "login");
     };
