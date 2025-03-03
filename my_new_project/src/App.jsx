@@ -9,6 +9,7 @@ import "./css/main.css";
 export default function App() {
   const [alertMessage, setAlertMessage] = useState("");
   const [alertType, setAlertType] = useState("");
+  const [alertHidden, setAlertHidden] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState("");
   const [authUser, setAuthUser] = useState({ username: "", email: "", password: "" });
@@ -17,10 +18,17 @@ export default function App() {
   const showAlert = (message, type) => {
     setAlertMessage(message);
     setAlertType(type);
+    setAlertHidden(false); // Megjelenítjük az üzenetet
+
     setTimeout(() => {
-      setAlertMessage("");
-      setAlertType("");
-    }, 4000);
+      setAlertHidden(true); // Elindítjuk a fade-out animációt
+
+      // 500ms után (a CSS animáció befejezése után) töröljük az üzenetet
+      setTimeout(() => {
+        setAlertMessage("");
+        setAlertType("");
+      }, 500);
+    }, 3000); // 3 másodperc után kezdődik a fade-out
   };
 
   const openModal = (type) => {
@@ -54,7 +62,7 @@ export default function App() {
         setLoggedInUser(authUser.username); // Beállítja a felhasználó nevét
         closeModal();
       } else {
-        showAlert("Hibás felhasználónév vagy jelszó");
+        showAlert("Hibás felhasználónév vagy jelszó", "alert-error");
       }
     } catch (error) {
       showAlert("Hiba történt a bejelentkezés során");
@@ -95,7 +103,7 @@ export default function App() {
 
   return (
       <div className="app-container">
-        <Alert message={alertMessage} type={alertType} />
+        <Alert message={alertMessage} type={alertType} alertHidden={alertHidden} />
         <UserPanel 
           loggedInUser={loggedInUser} 
           handleLogout={() => setLoggedInUser(null)} 

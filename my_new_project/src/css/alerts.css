@@ -6,17 +6,20 @@
     border-radius: 5px;
     font-size: 16px;
     font-weight: bold;
-    z-index: 1000;
+    z-index: 1500;
     min-width: 250px;
     text-align: center;
     transition: opacity 0.5s ease-in-out;
+    background-color: rgba(0, 0, 0, 20%);
+    opacity: 1;
 }
 
-/* Alapállapot: elrejtett */
-.alert-container.hidden {
+/* 🔹 Fade-out animáció */
+.alert-hidden {
     opacity: 0;
-    visibility: hidden;
+    pointer-events: none;
 }
+
 
 /* Színek az alert típusokhoz */
 .alert-success {
@@ -26,9 +29,9 @@
 }
 
 .alert-error {
-    background-color: #dc3545;
+    background-color: rgba(255, 0, 0, 0.5);
     color: white;
-    border: 1px solid #b02a37;
+    border: none;
 }
 
 .alert-warning {
@@ -41,5 +44,22 @@
     background-color: #6c757d;
     color: white;
     border: 1px solid #5a6268;
+}
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
 }
 
