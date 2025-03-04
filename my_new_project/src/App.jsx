@@ -100,7 +100,6 @@ export default function App() {
     }
   };
 
-
   return (
       <div className="app-container">
         <Alert message={alertMessage} type={alertType} alertHidden={alertHidden} />

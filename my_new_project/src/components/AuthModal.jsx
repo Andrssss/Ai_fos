@@ -32,7 +32,6 @@ export default function AuthModal({
     const toggleModalType = () => {
         setCurrentModalType(currentModalType === "login" ? "register" : "login");
     };
-
     const handleOverlayClick = (e) => {
         if (e.target.classList.contains("modal-overlay")) {
             closeModal(); // 🔹 Csak akkor zárja be, ha a háttérre kattintanak
