@@ -8,6 +8,7 @@ export default function OCRProcessor({ showAlert, loggedInUser }) {
   const [latexCode, setLatexCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [fileName, setFileName] = useState(""); // Új state a fájlnév számára
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -65,6 +66,7 @@ export default function OCRProcessor({ showAlert, loggedInUser }) {
     const formData = new FormData();
     formData.append("email", email);
     formData.append("szoveg", latexCode);
+    formData.append("file_name", fileName); // Fájl név elküldése
 
     try {
       const response = await axios.post(
@@ -120,6 +122,14 @@ export default function OCRProcessor({ showAlert, loggedInUser }) {
       {latexCode && (
         <>
           <textarea className="latex-textarea" readOnly value={latexCode} />
+          {/* Fájl név beviteli mező */}
+          <input
+            type="text"
+            placeholder="Fájl neve"
+            value={fileName}
+            onChange={(e) => setFileName(e.target.value)}
+            className="file-name-input"
+          />
           <button
             className={`upload-button ${uploading ? "button-disabled" : ""}`}
             onClick={handleUpload}

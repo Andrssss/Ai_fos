@@ -3,7 +3,8 @@ import Alert from "./components/Alert.jsx";
 import AuthModal from "./components/AuthModal.jsx";
 import UserPanel from "./components/UserPanel.jsx";
 import OCRProcessor from "./components/OCRProcessor.jsx";
-import axios from "axios"
+import axios from "axios";
+import FileList from "./FileList";
 import "./css/main.css";
 
 export default function App() {
@@ -14,6 +15,7 @@ export default function App() {
   const [modalType, setModalType] = useState("");
   const [authUser, setAuthUser] = useState({ username: "", email: "", password: "" });
   const [loggedInUser, setLoggedInUser] = useState(null); // 🔹 Bejelentkezett felhasználó állapota
+  const [ocrText, setOcrText] = useState(""); // OCR-ból kapott szöveg tárolása
 
   const showAlert = (message, type) => {
     setAlertMessage(message);
@@ -53,9 +55,9 @@ export default function App() {
       formData.append("password", authUser.password);
 
       const response = await axios.post(
-          "https://www.kacifant.hu/andris/login.php",
-          formData,
-          { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
+        "https://www.kacifant.hu/andris/login.php",
+        formData,
+        { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
       );
 
       if (response.data.includes("Sikeres")) {
@@ -68,9 +70,6 @@ export default function App() {
       showAlert("Hiba történt a bejelentkezés során");
     }
   };
-
-
-
 
   // 🔹 Regisztrációs függvény (opcionálisan frissítheti az állapotot)
   const handleRegister = async () => {
@@ -86,9 +85,9 @@ export default function App() {
       formData.append("password", authUser.password);
 
       const response = await axios.post(
-          "https://www.kacifant.hu/andris/register.php",
-          formData,
-          { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
+        "https://www.kacifant.hu/andris/register.php",
+        formData,
+        { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
       );
 
       showAlert(response.data);
@@ -100,24 +99,53 @@ export default function App() {
     }
   };
 
+  // 🔹 OCR szöveg feltöltési függvény
+  const handleUploadText = async () => {
+    if (!ocrText) {
+      showAlert("Nincs feltöltendő szöveg!", "alert-error");
+      return;
+    }
+
+    // Ha nincs bejelentkezve vagy nincs megadva email, akkor default emailt használunk
+    const email = loggedInUser && authUser.email ? authUser.email : "default@default.com";
+
+    try {
+      const formData = new URLSearchParams();
+      formData.append("email", email);
+      formData.append("szoveg", ocrText);
+
+      const response = await axios.post(
+        "https://www.kacifant.hu/andris/upload_saved_file.php",
+        formData,
+        { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
+      );
+
+      showAlert(response.data);
+    } catch (error) {
+      showAlert("Hiba a feltöltés során: " + error.message, "alert-error");
+    }
+  };
+
   return (
-      <div className="app-container">
-        <Alert message={alertMessage} type={alertType} alertHidden={alertHidden} />
-        <UserPanel 
-          loggedInUser={loggedInUser} 
-          handleLogout={() => setLoggedInUser(null)} 
-          openModal={openModal} 
-        />
-        <OCRProcessor showAlert={showAlert} />
-        <AuthModal 
-            showModal={showModal} 
-            modalType={modalType} 
-            closeModal={closeModal} 
-            authUser={authUser} 
-            handleAuthChange={(e) => setAuthUser({ ...authUser, [e.target.name]: e.target.value })} 
-            handleLogin={handleLogin}  // 🔹 Átadjuk az AuthModal-nak
-            handleRegister={handleRegister}  // 🔹 Átadjuk az AuthModal-nak
-        />
-      </div>
+    <div className="app-container">
+      <Alert message={alertMessage} type={alertType} alertHidden={alertHidden} />
+      <UserPanel 
+        loggedInUser={loggedInUser} 
+        handleLogout={() => setLoggedInUser(null)} 
+        openModal={openModal} 
+      />
+      <FileList />
+      {/* Az OCRProcessor beállítja az OCR-ból kapott szöveget */}
+      <OCRProcessor showAlert={showAlert} setOcrText={setOcrText} />
+      <AuthModal 
+        showModal={showModal} 
+        modalType={modalType} 
+        closeModal={closeModal} 
+        authUser={authUser} 
+        handleAuthChange={(e) => setAuthUser({ ...authUser, [e.target.name]: e.target.value })}
+        handleLogin={handleLogin}  // 🔹 Átadjuk az AuthModal-nak
+        handleRegister={handleRegister}  // 🔹 Átadjuk az AuthModal-nak
+      />
+    </div>
   );
 }
