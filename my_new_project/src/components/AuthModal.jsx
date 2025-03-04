@@ -2,18 +2,19 @@ import React, { useState } from "react";
 import "../css/auth-panel.css"; // Import the CSS file
 
 export default function AuthModal({
-                                      showModal,
-                                      modalType,
-                                      closeModal,
-                                      authUser,
-                                      handleAuthChange,
-                                      handleLogin,
-                                      handleRegister,
-                                      authMessage
-                                  }) {
+      showModal,
+      modalType,
+      closeModal,
+      authUser,
+      handleAuthChange,
+      handleLogin,
+      handleRegister,
+      authMessage
+  }) {
     if (!showModal) return null;
 
     const [invalidPassword, setInvalidPassword] = useState(false);
+    const [shakeEffect, setShakeEffect] = useState(false);
     const [currentModalType, setCurrentModalType] = useState(modalType); // 🔹 Kezeli a modal váltását
 
     const handleSubmit = async (e) => {
@@ -22,6 +23,7 @@ export default function AuthModal({
         if (currentModalType === "login") {
             const success = await handleLogin();  // 🔹 Meghívjuk a bejelentkezési függvényt
             setInvalidPassword(!success); // Ha sikertelen, akkor piros lesz a mező
+            setTimeout(() => setInvalidPassword(false), 200);
         } else if (currentModalType === "register") {
             handleRegister();  // 🔹 Meghívjuk a regisztrációs függvényt
             setInvalidPassword(false); // Regisztrációkor nincs ilyen ellenőrzés
@@ -30,7 +32,6 @@ export default function AuthModal({
     const toggleModalType = () => {
         setCurrentModalType(currentModalType === "login" ? "register" : "login");
     };
-
     const handleOverlayClick = (e) => {
         if (e.target.classList.contains("modal-overlay")) {
             closeModal(); // 🔹 Csak akkor zárja be, ha a háttérre kattintanak
@@ -64,10 +65,9 @@ export default function AuthModal({
                                     value={authUser.password}
                                     onChange={handleAuthChange}
                                     required
-                                    className={invalidPassword ? "input-error" : ""}
+                                    className={`password-input ${invalidPassword ? "input-error" : ""} ${shakeEffect ? "input-error" : ""}`} // 🔹 Itt aktiváljuk az effektet
                                 />
                             </div>
-                            {invalidPassword && <p className="error-message">Hibás jelszó!</p>}
                             <button type="submit" className="auth-button">
                                 Belépés
                             </button>
