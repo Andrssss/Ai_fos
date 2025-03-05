@@ -109,8 +109,6 @@ export default function App() {
         { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
       );
 
-
-
       showAlert(response.data);
       if (response.data.includes("Duplicate"))
       {
@@ -171,9 +169,9 @@ export default function App() {
         handleLogout={() => setLoggedInUser(null)} 
         openModal={openModal} 
       />
-      <FileList />
+      <FileList loggedInUser={loggedInUser} />
       {/* Az OCRProcessor beállítja az OCR-ból kapott szöveget */}
-      <OCRProcessor showAlert={showAlert} setOcrText={setOcrText} />
+      <OCRProcessor showAlert={showAlert} setOcrText={setOcrText} loggedInUser={loggedInUser}  />
       <AuthModal 
         showModal={showModal} 
         modalType={modalType} 
