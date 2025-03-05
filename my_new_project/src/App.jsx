@@ -60,14 +60,18 @@ export default function App() {
         { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
       );
 
-      if (response.data.includes("Sikeres")) {
+
+      if (response.data.includes("login-success")) {
         setLoggedInUser(authUser.username); // Beállítja a felhasználó nevét
         closeModal();
-      } else {
-        showAlert("Hibás felhasználónév vagy jelszó", "alert-error");
+      }
+      if (response.data.includes("password-error"))
+      {
+        showAlert("Hibás felhasználónév vagy jelszó!", "alert-error");
       }
     } catch (error) {
-      showAlert("Hiba történt a bejelentkezés során");
+      showAlert("Hiba történt a bejelentkezés során", "alert-error");
+
     }
   };
 
@@ -90,8 +94,26 @@ export default function App() {
         { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
       );
 
+
+
       showAlert(response.data);
-      if (response.data.includes("Sikeres")) {
+      if (response.data.includes("Duplicate"))
+      {
+        if (response.data.includes("username"))
+        {
+          showAlert("A felhasználónév már foglalt!", "alert-error");
+          return "invalidUsername";
+        }
+        if (response.data.includes("email"))
+        {
+          showAlert("A megadott email cím már foglalt!", "alert-error")
+          return "invalidEmail"
+        }
+      }
+
+
+
+      if (response.data.includes("success-registration")) {
         closeModal();
       }
     } catch (error) {

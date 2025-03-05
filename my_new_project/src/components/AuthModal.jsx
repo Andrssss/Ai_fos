@@ -13,9 +13,12 @@ export default function AuthModal({
   }) {
     if (!showModal) return null;
 
+
     const [invalidPassword, setInvalidPassword] = useState(false);
     const [shakeEffect, setShakeEffect] = useState(false);
     const [currentModalType, setCurrentModalType] = useState(modalType); // 🔹 Kezeli a modal váltását
+    const [invalidEmail, setInvalidEmail] = useState(false);
+    const [invalidUsername, setInvalidUsername] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault(); // Prevent page refresh
@@ -25,8 +28,17 @@ export default function AuthModal({
             setInvalidPassword(!success); // Ha sikertelen, akkor piros lesz a mező
             setTimeout(() => setInvalidPassword(false), 200);
         } else if (currentModalType === "register") {
-            handleRegister();  // 🔹 Meghívjuk a regisztrációs függvényt
-            setInvalidPassword(false); // Regisztrációkor nincs ilyen ellenőrzés
+            const success = await handleRegister();
+            if (success == "invalidUsername")
+            {
+                setInvalidUsername(true);
+                setTimeout(() => setInvalidUsername(false), 200);
+            }
+            if (success == "invalidEmail")
+            {
+                setInvalidEmail(true);
+                setTimeout(()=> setInvalidEmail(false), 200)
+            }
         }
     };
     const toggleModalType = () => {
@@ -88,6 +100,7 @@ export default function AuthModal({
                                     value={authUser.username}
                                     onChange={handleAuthChange}
                                     required
+                                    className={`username-input ${invalidUsername ? "input-error" : ""} ${shakeEffect ? "input-error" : ""}`}
                                 />
                             </div>
                             <div className="input-group">
@@ -98,6 +111,7 @@ export default function AuthModal({
                                     value={authUser.email}
                                     onChange={handleAuthChange}
                                     required
+                                    className={`email-input ${invalidEmail ? "input-error" : ""} ${shakeEffect ? "input-error" : ""}`}
                                 />
                             </div>
                             <div className="input-group">
