@@ -42,26 +42,29 @@ export default function App() {
     setShowModal(false);
   };
 
+
+
+  
   // 🔹 Bejelentkezési függvény
   const handleLogin = async () => {
     if (!authUser.username || !authUser.password) {
       showAlert("Kérlek tölts ki minden mezőt!");
       return;
     }
-
+  
     try {
       const formData = new URLSearchParams();
       formData.append("username", authUser.username);
       formData.append("password", authUser.password);
-
+  
       const response = await axios.post(
         "https://www.kacifant.hu/andris/login.php",
         formData,
         { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
       );
-
+  
       if (response.data.includes("Sikeres")) {
-        setLoggedInUser(authUser.username); // Beállítja a felhasználó nevét
+        setLoggedInUser(authUser.username); // 🔹 Itt állítjuk be a bejelentkezett felhasználót
         closeModal();
       } else {
         showAlert("Hibás felhasználónév vagy jelszó", "alert-error");
@@ -70,6 +73,7 @@ export default function App() {
       showAlert("Hiba történt a bejelentkezés során");
     }
   };
+  
 
   // 🔹 Regisztrációs függvény (opcionálisan frissítheti az állapotot)
   const handleRegister = async () => {
@@ -98,33 +102,7 @@ export default function App() {
       showAlert("Hiba történt a regisztráció során" + error);
     }
   };
-
-  // 🔹 OCR szöveg feltöltési függvény
-  const handleUploadText = async () => {
-    if (!ocrText) {
-      showAlert("Nincs feltöltendő szöveg!", "alert-error");
-      return;
-    }
-
-    // Ha nincs bejelentkezve vagy nincs megadva email, akkor default emailt használunk
-    const email = loggedInUser && authUser.email ? authUser.email : "default@default.com";
-
-    try {
-      const formData = new URLSearchParams();
-      formData.append("email", email);
-      formData.append("szoveg", ocrText);
-
-      const response = await axios.post(
-        "https://www.kacifant.hu/andris/upload_saved_file.php",
-        formData,
-        { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
-      );
-
-      showAlert(response.data);
-    } catch (error) {
-      showAlert("Hiba a feltöltés során: " + error.message, "alert-error");
-    }
-  };
+  
 
   return (
     <div className="app-container">
@@ -134,9 +112,9 @@ export default function App() {
         handleLogout={() => setLoggedInUser(null)} 
         openModal={openModal} 
       />
-      <FileList />
+      <FileList loggedInUser={loggedInUser} />
       {/* Az OCRProcessor beállítja az OCR-ból kapott szöveget */}
-      <OCRProcessor showAlert={showAlert} setOcrText={setOcrText} />
+      <OCRProcessor showAlert={showAlert} setOcrText={setOcrText} loggedInUser={loggedInUser}  />
       <AuthModal 
         showModal={showModal} 
         modalType={modalType} 

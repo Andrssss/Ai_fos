@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../css/main.css";
 import "../css/ocr.css";
@@ -9,6 +9,13 @@ export default function OCRProcessor({ showAlert, loggedInUser }) {
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [fileName, setFileName] = useState(""); // Új state a fájlnév számára
+
+  useEffect(() => {
+    const savedUser = localStorage.getItem("loggedInUser");
+    if (savedUser && !loggedInUser) {
+      showAlert(`Üdv újra, ${savedUser}!`, "success");
+    }
+  }, [loggedInUser, showAlert]);
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -53,20 +60,19 @@ export default function OCRProcessor({ showAlert, loggedInUser }) {
     }
   };
 
-  // Ha nincs bejelentkezve, akkor default email-t használunk
   const handleUpload = async () => {
     if (!latexCode) {
       showAlert("Nincs feltöltendő szöveg!", "warning");
       return;
     }
-    const email =
-      loggedInUser && loggedInUser.email ? loggedInUser.email : "default@kacifant.hu";
-
+    
     setUploading(true);
     const formData = new FormData();
-    formData.append("email", email);
+    formData.append("username", loggedInUser); 
     formData.append("szoveg", latexCode);
-    formData.append("file_name", fileName); // Fájl név elküldése
+    formData.append("file_name", fileName || `uploaded_text_${Date.now()}`);
+
+    console.log({ username: loggedInUser, szoveg: latexCode, file_name: fileName });
 
     try {
       const response = await axios.post(
