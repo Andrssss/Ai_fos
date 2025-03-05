@@ -82,6 +82,21 @@ export default function App() {
       return;
     }
 
+    if (authUser.password.length < 8)
+    {
+      showAlert("A jelszónak legalább 8 karakternek kell lennie!", "alert-error");
+      return "invalidPassword";
+    }
+    if (!/[A-Z]/.test(authUser.password)) {
+      showAlert("A jelszónak tartalmaznia kell legalább egy nagybetűt!", "alert-error");
+      return "invalidPassword";
+    }
+
+    if (!/\d/.test(authUser.password)) {
+      showAlert("A jelszónak tartalmaznia kell legalább egy számot.", "alert-error");
+      return "invalidPassword";
+    }
+
     try {
       const formData = new URLSearchParams();
       formData.append("username", authUser.username);

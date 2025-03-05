@@ -13,10 +13,8 @@ export default function AuthModal({
   }) {
     if (!showModal) return null;
 
-
+    const [currentModalType, setCurrentModalType] = useState(modalType);
     const [invalidPassword, setInvalidPassword] = useState(false);
-    const [shakeEffect, setShakeEffect] = useState(false);
-    const [currentModalType, setCurrentModalType] = useState(modalType); // 🔹 Kezeli a modal váltását
     const [invalidEmail, setInvalidEmail] = useState(false);
     const [invalidUsername, setInvalidUsername] = useState(false);
 
@@ -26,18 +24,23 @@ export default function AuthModal({
         if (currentModalType === "login") {
             const success = await handleLogin();  // 🔹 Meghívjuk a bejelentkezési függvényt
             setInvalidPassword(!success); // Ha sikertelen, akkor piros lesz a mező
-            setTimeout(() => setInvalidPassword(false), 200);
+            setTimeout(() => setInvalidPassword(false), 800);
         } else if (currentModalType === "register") {
             const success = await handleRegister();
             if (success == "invalidUsername")
             {
                 setInvalidUsername(true);
-                setTimeout(() => setInvalidUsername(false), 200);
+                setTimeout(() => setInvalidUsername(false), 800);
             }
             if (success == "invalidEmail")
             {
                 setInvalidEmail(true);
-                setTimeout(()=> setInvalidEmail(false), 200)
+                setTimeout(()=> setInvalidEmail(false), 800);
+            }
+            if (success == "invalidPassword")
+            {
+                setInvalidPassword(true); // Ha sikertelen, akkor piros lesz a mező
+                setTimeout(() => setInvalidPassword(false), 800);
             }
         }
     };
@@ -71,13 +74,11 @@ export default function AuthModal({
                             </div>
                             <div className="input-group">
                                 <input
-                                    type="password"
-                                    name="password"
                                     placeholder="Jelszó"
                                     value={authUser.password}
                                     onChange={handleAuthChange}
                                     required
-                                    className={`password-input ${invalidPassword ? "input-error" : ""} ${shakeEffect ? "input-error" : ""}`} // 🔹 Itt aktiváljuk az effektet
+                                    className={`password-input ${invalidPassword ? "input-error" : ""}`} // 🔹 Itt aktiváljuk az effektet
                                 />
                             </div>
                             <button type="submit" className="auth-button">
@@ -100,7 +101,7 @@ export default function AuthModal({
                                     value={authUser.username}
                                     onChange={handleAuthChange}
                                     required
-                                    className={`username-input ${invalidUsername ? "input-error" : ""} ${shakeEffect ? "input-error" : ""}`}
+                                    className={`username-input ${invalidUsername ? "input-error" : ""}`}
                                 />
                             </div>
                             <div className="input-group">
@@ -111,7 +112,7 @@ export default function AuthModal({
                                     value={authUser.email}
                                     onChange={handleAuthChange}
                                     required
-                                    className={`email-input ${invalidEmail ? "input-error" : ""} ${shakeEffect ? "input-error" : ""}`}
+                                    className={`email-input ${invalidEmail ? "input-error" : ""}`}
                                 />
                             </div>
                             <div className="input-group">
@@ -122,6 +123,8 @@ export default function AuthModal({
                                     value={authUser.password}
                                     onChange={handleAuthChange}
                                     required
+                                    className={`password-input ${invalidPassword ? "input-error" : ""}`}
+
                                 />
                             </div>
                             <button type="submit" className="auth-button">
