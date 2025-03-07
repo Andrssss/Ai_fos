@@ -23,6 +23,12 @@ export default function AuthModal({
 
         if (currentModalType === "login") {
             const success = await handleLogin();  // 🔹 Meghívjuk a bejelentkezési függvényt
+            console.log(success);
+            if (success == "invalidUsername")
+            {
+                setInvalidUsername(true);
+                setTimeout(() => setInvalidUsername(false), 800);
+            }
             setInvalidPassword(!success); // Ha sikertelen, akkor piros lesz a mező
             setTimeout(() => setInvalidPassword(false), 800);
         } else if (currentModalType === "register") {
@@ -69,15 +75,15 @@ export default function AuthModal({
                                     placeholder="Felhasználónév"
                                     value={authUser.username}
                                     onChange={handleAuthChange}
-                                    required
                                 />
                             </div>
                             <div className="input-group">
                                 <input
+                                    type="password"
+                                    name="password"
                                     placeholder="Jelszó"
                                     value={authUser.password}
                                     onChange={handleAuthChange}
-                                    required
                                     className={`password-input ${invalidPassword ? "input-error" : ""}`} // 🔹 Itt aktiváljuk az effektet
                                 />
                             </div>
@@ -100,7 +106,6 @@ export default function AuthModal({
                                     placeholder="Felhasználónév"
                                     value={authUser.username}
                                     onChange={handleAuthChange}
-                                    required
                                     className={`username-input ${invalidUsername ? "input-error" : ""}`}
                                 />
                             </div>
@@ -111,7 +116,6 @@ export default function AuthModal({
                                     placeholder="Email"
                                     value={authUser.email}
                                     onChange={handleAuthChange}
-                                    required
                                     className={`email-input ${invalidEmail ? "input-error" : ""}`}
                                 />
                             </div>
@@ -122,7 +126,6 @@ export default function AuthModal({
                                     placeholder="Jelszó"
                                     value={authUser.password}
                                     onChange={handleAuthChange}
-                                    required
                                     className={`password-input ${invalidPassword ? "input-error" : ""}`}
 
                                 />

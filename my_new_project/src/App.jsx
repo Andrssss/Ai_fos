@@ -17,6 +17,7 @@ export default function App() {
   const [loggedInUser, setLoggedInUser] = useState(null); // 🔹 Bejelentkezett felhasználó állapota
   const [ocrText, setOcrText] = useState(""); // OCR-ból kapott szöveg tárolása
 
+
   const showAlert = (message, type) => {
     setAlertMessage(message);
     setAlertType(type);
@@ -44,10 +45,12 @@ export default function App() {
 
   // 🔹 Bejelentkezési függvény
   const handleLogin = async () => {
-    if (!authUser.username || !authUser.password) {
+    if (!authUser.username) {
       showAlert("Kérlek tölts ki minden mezőt!");
-      return;
+      return "invalidUsername";
     }
+
+
 
     try {
       const formData = new URLSearchParams();
@@ -71,7 +74,6 @@ export default function App() {
       }
     } catch (error) {
       showAlert("Hiba történt a bejelentkezés során", "alert-error");
-
     }
   };
 
@@ -79,23 +81,14 @@ export default function App() {
   const handleRegister = async () => {
     if (!authUser.username || !authUser.email || !authUser.password) {
       showAlert("Kérlek tölts ki minden mezőt!");
-      return;
+      return authUser.username ? (authUser.email ? "invalidPassword" : "invalidEmail") : "invalidUsername";
     }
-
-    if (authUser.password.length < 8)
+    if (authUser.password.length < 8 || !/[A-Z]/.test(authUser.password || !/\d/.test(authUser.password)))
     {
-      showAlert("A jelszónak legalább 8 karakternek kell lennie!", "alert-error");
-      return "invalidPassword";
-    }
-    if (!/[A-Z]/.test(authUser.password)) {
-      showAlert("A jelszónak tartalmaznia kell legalább egy nagybetűt!", "alert-error");
+      showAlert(authUser.password.length < 8 ? "A jelszónak legalább 8 karakternek kell lennie!" : (!/[A-Z]/.test(authUser.password) ? "A jelszónak tartalmaznia kell legalább egy nagybetűt!":"A jelszónak tartalmaznia kell legalább egy számot."), "alert-error");
       return "invalidPassword";
     }
 
-    if (!/\d/.test(authUser.password)) {
-      showAlert("A jelszónak tartalmaznia kell legalább egy számot.", "alert-error");
-      return "invalidPassword";
-    }
 
     try {
       const formData = new URLSearchParams();
@@ -110,21 +103,11 @@ export default function App() {
       );
 
       showAlert(response.data);
-      if (response.data.includes("Duplicate"))
+
+      if (response.data.includes("Duplicate") && (response.data.includes("username") || response.data.includes("email")))
       {
-        if (response.data.includes("username"))
-        {
-          showAlert("A felhasználónév már foglalt!", "alert-error");
-          return "invalidUsername";
-        }
-        if (response.data.includes("email"))
-        {
-          showAlert("A megadott email cím már foglalt!", "alert-error")
-          return "invalidEmail"
-        }
+        showAlert(response.data.includes("username") ? "A felhasználónév már foglalt!" : "A megadott email cím már foglalt!", "alert-error")
       }
-
-
 
       if (response.data.includes("success-registration")) {
         closeModal();
