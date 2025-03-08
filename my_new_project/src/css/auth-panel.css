@@ -33,6 +33,7 @@
 
     /* Input csoportok */
 .auth-panel .input-group {
+    position:relative;
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -156,6 +157,7 @@
     box-sizing: border-box;
     color: #333;
     transition: border-color 0.3s ease-in-out;
+
 }
 
 .auth-panel input:focus,
@@ -224,4 +226,34 @@
     color: #23238c;
     background:none;
     text-decoration: underline;
+}
+
+
+.input-icon {
+    position: absolute;
+    right: 10px;
+    display: flex;
+    align-items: center;
+}
+.spinner {
+    width: 18px;
+    height: 18px;
+    border: 3px solid rgba(0, 0, 0, 0.2);
+    border-top: 3px solid #007bff;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+.success-icon {
+    color: green;
+    font-size: 16px;
+}
+
+/* ❌ Piros hiba ikon */
+.error-icon {
+    color: red;
+    font-size: 16px;
 }

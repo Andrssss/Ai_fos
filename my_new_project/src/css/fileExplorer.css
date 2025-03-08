@@ -1,0 +1,15 @@
+.openFileButton {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    zIndex: 1000;
+    display: flex;
+    alignItems: center;
+}
+
+.fileList {
+    position: fixed;
+    left : 100px;
+    display: flex;
+    height: 2000px;
+}

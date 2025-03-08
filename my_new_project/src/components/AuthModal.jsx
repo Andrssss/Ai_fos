@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../css/auth-panel.css"; // Import the CSS file
+import axios from "axios";
 
 export default function AuthModal({
       showModal,
       modalType,
       closeModal,
       authUser,
+      setAuthUser,
       handleAuthChange,
       handleLogin,
       handleRegister,
@@ -17,7 +19,53 @@ export default function AuthModal({
     const [invalidPassword, setInvalidPassword] = useState(false);
     const [invalidEmail, setInvalidEmail] = useState(false);
     const [invalidUsername, setInvalidUsername] = useState(false);
+    const [usernameStatus, setUsernameStatus] = useState(null);
+    const [emailStatus, setEmailStatus] = useState(null);
+    const [checking, setChecking] = useState(false);
 
+
+    useEffect(() => {
+        if (!authUser.username && !authUser.email && authUser.username.length < 3 && authUser.username.length < 3) return;
+
+        const timeoutId = setTimeout(() => {
+            checkAvailability(authUser.username, authUser.email);
+        }, 500);
+
+        return () => clearTimeout(timeoutId); // Ha új billentyűt nyom, törli az előző kérést
+    }, [authUser.username, authUser.email]);
+
+    const checkAvailability = async (username, email) => {
+        if (!username && !email) return;
+        setChecking(true);
+
+        try {
+            const response = await axios.get(
+                "https://www.kacifant.hu/andris/check-availability.php",
+                { params: { username, email } }
+            );
+
+            const responseData = response.data.trim();
+
+            if (responseData === "username-taken") {
+                setUsernameStatus(false);
+                setEmailStatus(null);
+            } else if (responseData === "email-taken") {
+                setUsernameStatus(null);
+                setEmailStatus(false);
+            } else if (responseData === "username-email-taken") {
+                setUsernameStatus(false);
+                setEmailStatus(false);
+            } else {
+                setUsernameStatus(true);
+                setEmailStatus(true);
+            }
+        } catch (error) {
+            console.error("Hiba az ellenőrzés során:", error);
+            setUsernameStatus(null);
+            setEmailStatus(null);
+        }
+        setChecking(false);
+    };
     const handleSubmit = async (e) => {
         e.preventDefault(); // Prevent page refresh
 
@@ -106,8 +154,20 @@ export default function AuthModal({
                                     placeholder="Felhasználónév"
                                     value={authUser.username}
                                     onChange={handleAuthChange}
-                                    className={`username-input ${invalidUsername ? "input-error" : ""}`}
+                                    className={`username-input ${usernameStatus === false ? "input-error" : ""}`}
                                 />
+                                <div className="input-icon">
+                                    {checking ? (
+                                        <div className="spinner"></div> // 🔄 Töltés animáció
+                                    ) : usernameStatus !== null ? (
+                                        usernameStatus ? (
+                                            <span className="success-icon">✔</span> // ✅ Szabad
+                                        ) : (
+                                            <span className="error-icon">❌</span> // ❌ Foglalt
+                                        )
+                                    ) : null}
+                                </div>
+
                             </div>
                             <div className="input-group">
                                 <input
@@ -116,8 +176,20 @@ export default function AuthModal({
                                     placeholder="Email"
                                     value={authUser.email}
                                     onChange={handleAuthChange}
-                                    className={`email-input ${invalidEmail ? "input-error" : ""}`}
+                                    className={`email-input ${emailStatus === false ? "input-error" : ""}`}
+                                    //{checking && <p>Ellenőrzés...</p>}
                                 />
+                                <div className="input-icon">
+                                    {checking ? (
+                                        <div className="spinner"></div> // 🔄 Töltés animáció
+                                    ) : emailStatus !== null ? (
+                                        emailStatus ? (
+                                            <span className="success-icon">✔</span> // ✅ Szabad
+                                        ) : (
+                                            <span className="error-icon">❌</span> // ❌ Foglalt
+                                        )
+                                    ) : null}
+                                </div>
                             </div>
                             <div className="input-group">
                                 <input

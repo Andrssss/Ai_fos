@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
+import "../css/main.css";
+import "../css/fileExplorer.css";
 export default function FileList({ loggedInUser }) {
   const [files, setFiles] = useState([]);
   const [visible, setVisible] = useState(false);
@@ -54,24 +55,17 @@ export default function FileList({ loggedInUser }) {
     window.URL.revokeObjectURL(url);
   };
 
-  return (
-    <div style={{
-      position: 'fixed',
-      top: '10px',
-      left: '10px',
-      zIndex: 1000,
-      display: 'flex',
-      alignItems: 'center'
-    }}>
-      <button onClick={() => setVisible(!visible)}>
+  return (loggedInUser ?
+    <div>
+      <button class="openFileButton" onClick={() => setVisible(!visible)}>
         {visible ? 'Bezár' : 'Fájlok listázása'}
       </button>
       {visible && (
-        <div style={{ marginLeft: '10px' }}>
+        <div>
           {files.length > 0 ? (
             files.map((file, index) => (
               <div key={index}>
-                <a
+                <a class={"fileList"}
                   href="#"
                   onClick={(e) => {
                     e.preventDefault();
@@ -87,6 +81,6 @@ export default function FileList({ loggedInUser }) {
           )}
         </div>
       )}
-    </div>
+    </div> : ""
   );
 }

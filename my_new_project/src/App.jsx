@@ -4,9 +4,8 @@ import AuthModal from "./components/AuthModal.jsx";
 import UserPanel from "./components/UserPanel.jsx";
 import OCRProcessor from "./components/OCRProcessor.jsx";
 import axios from "axios";
-import FileList from "./FileList";
+import FileList from "./components/FileList.jsx";
 import "./css/main.css";
-
 export default function App() {
   const [alertMessage, setAlertMessage] = useState("");
   const [alertType, setAlertType] = useState("");
@@ -49,9 +48,6 @@ export default function App() {
       showAlert("Kérlek tölts ki minden mezőt!");
       return "invalidUsername";
     }
-
-
-
     try {
       const formData = new URLSearchParams();
       formData.append("username", authUser.username);
@@ -83,12 +79,28 @@ export default function App() {
       showAlert("Kérlek tölts ki minden mezőt!");
       return authUser.username ? (authUser.email ? "invalidPassword" : "invalidEmail") : "invalidUsername";
     }
-    if (authUser.password.length < 8 || !/[A-Z]/.test(authUser.password || !/\d/.test(authUser.password)))
-    {
-      showAlert(authUser.password.length < 8 ? "A jelszónak legalább 8 karakternek kell lennie!" : (!/[A-Z]/.test(authUser.password) ? "A jelszónak tartalmaznia kell legalább egy nagybetűt!":"A jelszónak tartalmaznia kell legalább egy számot."), "alert-error");
-      return "invalidPassword";
+
+    const availabilityResponse = await axios.get(
+        "https://www.kacifant.hu/andris/check-availability.php",
+        { params: { username: authUser.username, email: authUser.email } }
+    );
+
+    const availability = availabilityResponse.data.trim();
+
+    if (availability === "username-taken") {
+      showAlert("A felhasználónév már foglalt!", "alert-error");
+      return "invalidUsername";
     }
 
+    if (availability === "email-taken") {
+      showAlert("A megadott email cím már foglalt!", "alert-error");
+      return "invalidEmail";
+    }
+
+    if (availability === "username-email-taken") {
+      showAlert("A felhasználónév és az email cím is foglalt!", "alert-error");
+      return "invalidUsernameEmail";
+    }
 
     try {
       const formData = new URLSearchParams();
@@ -102,11 +114,15 @@ export default function App() {
         { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
       );
 
-      showAlert(response.data);
-
       if (response.data.includes("Duplicate") && (response.data.includes("username") || response.data.includes("email")))
       {
         showAlert(response.data.includes("username") ? "A felhasználónév már foglalt!" : "A megadott email cím már foglalt!", "alert-error")
+      }
+
+      if (authUser.password.length < 8 || !/[A-Z]/.test(authUser.password || !/\d/.test(authUser.password)))
+      {
+        showAlert(authUser.password.length < 8 ? "A jelszónak legalább 8 karakternek kell lennie!" : (!/[A-Z]/.test(authUser.password) ? "A jelszónak tartalmaznia kell legalább egy nagybetűt!":"A jelszónak tartalmaznia kell legalább egy számot."), "alert-error");
+        return "invalidPassword";
       }
 
       if (response.data.includes("success-registration")) {
